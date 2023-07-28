@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# displays the content of the current working directory.
+# ls using for loop
 
-for i in *
-do
-    echo "$i" | cut -d'-' -f2
+for file in *; do
+  echo "$file" | cut -d '-' -f 2;
 done
