@@ -1,28 +1,45 @@
 #!/usr/bin/python3
-"""Module for task 2"""
+
+"""
+importing requests module
+"""
+
+from requests import get
 
 
-def recurse(subreddit, hot_list=[], count=0, after=None):
-    """Queries the Reddit API and returns all hot posts
-    of the subreddit"""
-    import requests
+def recurse(subreddit, hot_list=[], after=None):
+    """
+    function that queries the Reddit API and returns a list containing the
+    titles of all hot articles for a given subreddit.
+    """
 
-    sub_info = requests.get("https://www.reddit.com/r/{}/hot.json"
-                            .format(subreddit),
-                            params={"count": count, "after": after},
-                            headers={"User-Agent": "My-User-Agent"},
-                            allow_redirects=False)
-    if sub_info.status_code >= 400:
+    params = {'show': 'all'}
+
+    if subreddit is None or not isinstance(subreddit, str):
         return None
 
-    hot_l = hot_list + [child.get("data").get("title")
-                        for child in sub_info.json()
-                        .get("data")
-                        .get("children")]
+    user_agent = {'User-agent': 'Google Chrome Version 81.0.4044.129'}
 
-    info = sub_info.json()
-    if not info.get("data").get("after"):
-        return hot_l
+    url = 'https://www.reddit.com/r/{}/hot/.json?after={}'.format(subreddit,
+                                                                  after)
 
-    return recurse(subreddit, hot_l, info.get("data").get("count"),
-                   info.get("data").get("after"))
+    response = get(url, headers=user_agent, params=params)
+
+    if (response.status_code != 200):
+        return None
+
+    all_data = response.json()
+
+    try:
+        raw1 = all_data.get('data').get('children')
+        after = all_data.get('data').get('after')
+
+        if after is None:
+            return hot_list
+
+        for i in raw1:
+            hot_list.append(i.get('data').get('title'))
+
+        return recurse(subreddit, hot_list, after)
+    except:
+        print("None")
