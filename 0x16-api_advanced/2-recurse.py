@@ -28,18 +28,14 @@ def recurse(subreddit, hot_list=[], after=None):
     if (response.status_code != 200):
         return None
 
-    all_data = response.json()
+    hot_l = hot_list + [child.get("data").get("title")
+                        for child in sub_info.json()
+                        .get("data")
+                        .get("children")]
 
-    try:
-        raw1 = all_data.get('data').get('children')
-        after = all_data.get('data').get('after')
+    info = sub_info.json()
+    if not info.get("data").get("after"):
+        return hot_l
 
-        if after is None:
-            return hot_list
-
-        for i in raw1:
-            hot_list.append(i.get('data').get('title'))
-
-        return recurse(subreddit, hot_list, after)
-    except:
-        print("None")
+    return recurse(subreddit, hot_l, info.get("data").get("count"),
+                   info.get("data").get("after"))

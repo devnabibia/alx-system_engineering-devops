@@ -49,6 +49,7 @@ def count_words(subreddit, word_list=[], after=None, cleaned_dict=None):
         for k in sorted(new.items(), key=lambda x: (-x[1], x[0])):
             print("{}: {}".format(k[0], k[1]))
 
+<<<<<<< HEAD
         return None
 
     for i in raw1:
@@ -66,3 +67,13 @@ def count_words(subreddit, word_list=[], after=None, cleaned_dict=None):
                 cleaned_dict[j] += 1
 
     count_words(subreddit, word_list, after, cleaned_dict)
+=======
+    if not info.get("data").get("after"):
+        sorted_counts = sorted(word_count.items(), key=lambda kv: kv[0])
+        sorted_counts = sorted(word_count.items(),
+                               key=lambda kv: kv[1], reverse=True)
+        [print('{}: {}'.format(k, v)) for k, v in sorted_counts if v != 0]
+    else:
+        return count_words(subreddit, word_list, word_count,
+                           info.get("data").get("after"))
+>>>>>>> 4bbc73d354d7ef6f334f506c44215f9aff24b141

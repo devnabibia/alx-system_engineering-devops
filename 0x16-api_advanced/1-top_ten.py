@@ -13,6 +13,7 @@ def top_ten(subreddit):
     10 hot posts listed for a given subreddit
     """
 
+<<<<<<< HEAD
     if subreddit is None or not isinstance(subreddit, str):
         print("None")
 
@@ -31,3 +32,14 @@ def top_ten(subreddit):
 
     except:
         print("None")
+=======
+    sub_info = requests.get("https://www.reddit.com/r/{}/hot.json?limit=10"
+                            .format(subreddit),
+                            headers={"User-Agent": "My-User-Agent"},
+                            allow_redirects=False)
+    if sub_info.status_code >= 300:
+        print('None')
+    else:
+        [print(child.get("data").get("title"))
+         for child in sub_info.json().get("data").get("children")]
+>>>>>>> 4bbc73d354d7ef6f334f506c44215f9aff24b141
